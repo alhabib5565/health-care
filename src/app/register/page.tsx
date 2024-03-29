@@ -9,36 +9,52 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import { useForm } from "react-hook-form";
+import React from "react";
 import logo from "../../assets/svgs/logo.svg";
 import Link from "next/link";
+import { FieldValues, useForm } from "react-hook-form";
+import { modifyPayload } from "@/utils/modifyPayload";
+import { registerPatient } from "@/service/action/registerPatient";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import { loginUser } from "@/service/action/logitUser";
 import { storeUserInfo } from "../auth.service";
-import { useRouter } from "next/navigation";
 
-export type TLoginUserInputs = {
-  email: string;
+type TPatientRegisterData = {
   password: string;
+  patient: {
+    name: string;
+    email: string;
+    address: string;
+    contactNumber: string;
+  };
 };
 
-const Login = () => {
+const RegisterPage = () => {
   const router = useRouter();
-  const { register, handleSubmit } = useForm<TLoginUserInputs>();
-  const onSubmit = async (data: TLoginUserInputs) => {
+  const { register, handleSubmit } = useForm<TPatientRegisterData>();
+  const onSubmit = async (data: FieldValues) => {
     try {
-      const response = await loginUser(data);
-      if (response.data.accessToken) {
-        router.push("/");
+      const modifyedData = modifyPayload(data);
+      console.log(modifyedData);
+      const response = await registerPatient(modifyedData);
+      if (response.data) {
         toast.success(response.message);
-        storeUserInfo(response.data.accessToken);
+        const loginResponse = await loginUser({
+          password: data.password,
+          email: data.patient.email,
+        });
+        console.log(loginResponse);
+        if (loginResponse.data.accessToken) {
+          router.push("/");
+          storeUserInfo(loginResponse.data.accessToken);
+        }
       }
       console.log(response);
     } catch (error) {
       console.log(error);
     }
   };
-
   return (
     <Container
       sx={{
@@ -70,6 +86,17 @@ const Login = () => {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2} mt={2}>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                type="text"
+                size="small"
+                id="outlined-basic"
+                label="Name"
+                variant="outlined"
+                {...register("patient.name")}
+              />
+            </Grid>
             <Grid item xs={6}>
               <TextField
                 fullWidth
@@ -78,7 +105,7 @@ const Login = () => {
                 id="outlined-basic"
                 label="Email"
                 variant="outlined"
-                {...register("email")}
+                {...register("patient.email")}
               />
             </Grid>
             <Grid item xs={6}>
@@ -92,17 +119,29 @@ const Login = () => {
                 {...register("password")}
               />
             </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                type="text"
+                size="small"
+                id="outlined-basic"
+                label="Contact number"
+                variant="outlined"
+                {...register("patient.contactNumber")}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                type="text"
+                size="small"
+                id="outlined-basic"
+                label="Address"
+                variant="outlined"
+                {...register("patient.address")}
+              />
+            </Grid>
           </Grid>
-          <Typography
-            variant="body1"
-            component="p"
-            fontWeight={300}
-            fontSize={14}
-            textAlign="end"
-            mt={1}
-          >
-            Forget password
-          </Typography>
           <Button type="submit" sx={{ my: 3 }} fullWidth>
             Register
           </Button>
@@ -114,9 +153,9 @@ const Login = () => {
           fontSize={14}
           textAlign="center"
         >
-          Don`&apos;`t have an account?{" "}
-          <Link href="/register" className="text-blue-500 font-semibold">
-            Create an account
+          Do you already have an account?{" "}
+          <Link href="/login" className="text-blue-500 font-semibold">
+            Login
           </Link>
         </Typography>
       </Box>
@@ -124,4 +163,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default RegisterPage;
