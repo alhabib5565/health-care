@@ -1,24 +1,19 @@
 "use client";
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Container, Grid, Stack, Typography } from "@mui/material";
 import Image from "next/image";
-import React from "react";
 import logo from "../../assets/svgs/logo.svg";
 import Link from "next/link";
-import { FieldValues, useForm } from "react-hook-form";
+import { FieldValues } from "react-hook-form";
 import { modifyPayload } from "@/utils/modifyPayload";
 import { registerPatient } from "@/service/action/registerPatient";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { loginUser } from "@/service/action/logitUser";
+import { loginUser } from "@/service/action/loginUser";
 import { storeUserInfo } from "../auth.service";
+import PHForm from "@/components/ui/Form/PHForm";
+import PHInput from "@/components/ui/Form/PHInput";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type TPatientRegisterData = {
   password: string;
@@ -30,9 +25,33 @@ type TPatientRegisterData = {
   };
 };
 
+const patientRegisterValidationSchema = z.object({
+  password: z.string().min(6, "password must be at least 6 character"),
+  patient: z.object({
+    email: z
+      .string()
+      .email("Please provide a vlid email")
+      .min(1, "Email is required"),
+    name: z.string().min(1, "Please provide you name"),
+    contactNumber: z
+      .string()
+      .regex(/^\d{11}$/, "Please provide a valid phone number!"),
+    address: z.string().min(1, "Address is required"),
+  }),
+});
+
+const defaultValues = {
+  password: "",
+  patient: {
+    name: "",
+    email: "",
+    address: "",
+    contactNumber: "",
+  },
+};
+
 const RegisterPage = () => {
   const router = useRouter();
-  const { register, handleSubmit } = useForm<TPatientRegisterData>();
   const onSubmit = async (data: FieldValues) => {
     try {
       const modifyedData = modifyPayload(data);
@@ -49,6 +68,12 @@ const RegisterPage = () => {
           router.push("/");
           storeUserInfo(loginResponse.data.accessToken);
         }
+      } else {
+        toast.error(response.message, {
+          duration: 5000,
+          position: "top-right",
+          className: "text-red-500",
+        });
       }
       console.log(response);
     } catch (error) {
@@ -84,68 +109,57 @@ const RegisterPage = () => {
           </Typography>
         </Stack>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <PHForm
+          defaultValues={defaultValues}
+          resolver={zodResolver(patientRegisterValidationSchema)}
+          onSubmit={onSubmit}
+        >
           <Grid container spacing={2} mt={2}>
             <Grid item xs={12}>
-              <TextField
-                fullWidth
+              <PHInput
+                required={true}
                 type="text"
-                size="small"
-                id="outlined-basic"
+                name="patient.name"
                 label="Name"
-                variant="outlined"
-                {...register("patient.name")}
               />
             </Grid>
             <Grid item xs={6}>
-              <TextField
-                fullWidth
+              <PHInput
+                required={true}
                 type="email"
-                size="small"
-                id="outlined-basic"
+                name="patient.email"
                 label="Email"
-                variant="outlined"
-                {...register("patient.email")}
               />
             </Grid>
             <Grid item xs={6}>
-              <TextField
-                fullWidth
+              <PHInput
                 type="password"
-                size="small"
-                id="outlined-basic"
+                name="password"
+                required={true}
                 label="Password"
-                variant="outlined"
-                {...register("password")}
               />
             </Grid>
             <Grid item xs={6}>
-              <TextField
-                fullWidth
+              <PHInput
                 type="text"
-                size="small"
-                id="outlined-basic"
                 label="Contact number"
-                variant="outlined"
-                {...register("patient.contactNumber")}
+                name="patient.contactNumber"
+                required
               />
             </Grid>
             <Grid item xs={6}>
-              <TextField
-                fullWidth
+              <PHInput
                 type="text"
-                size="small"
-                id="outlined-basic"
                 label="Address"
-                variant="outlined"
-                {...register("patient.address")}
+                name="patient.address"
+                required
               />
             </Grid>
           </Grid>
           <Button type="submit" sx={{ my: 3 }} fullWidth>
             Register
           </Button>
-        </form>
+        </PHForm>
         <Typography
           variant="body1"
           component="p"

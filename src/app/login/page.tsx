@@ -1,37 +1,43 @@
 "use client";
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Container, Grid, Stack, Typography } from "@mui/material";
 import Image from "next/image";
-import { useForm } from "react-hook-form";
+import { FieldValues, SubmitHandler } from "react-hook-form";
 import logo from "../../assets/svgs/logo.svg";
 import Link from "next/link";
 import { toast } from "sonner";
-import { loginUser } from "@/service/action/logitUser";
+import { loginUser } from "@/service/action/loginUser";
 import { storeUserInfo } from "../auth.service";
 import { useRouter } from "next/navigation";
+import PHForm from "@/components/ui/Form/PHForm";
+import PHInput from "@/components/ui/Form/PHInput";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-export type TLoginUserInputs = {
-  email: string;
-  password: string;
+const loginFormValidationShcema = z.object({
+  email: z.string().email("Email es required"),
+  password: z.string().min(6, "password must be at least 6 character"),
+});
+
+const defaultValues = {
+  email: "",
+  password: "",
 };
 
 const Login = () => {
   const router = useRouter();
-  const { register, handleSubmit } = useForm<TLoginUserInputs>();
-  const onSubmit = async (data: TLoginUserInputs) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
       const response = await loginUser(data);
-      if (response.data.accessToken) {
+      if (response?.data?.accessToken) {
         router.push("/");
         toast.success(response.message);
         storeUserInfo(response.data.accessToken);
+      } else {
+        toast.error(response.message, {
+          duration: 5000,
+          position: "top-right",
+          className: "text-red-500",
+        });
       }
       console.log(response);
     } catch (error) {
@@ -68,28 +74,26 @@ const Login = () => {
           </Typography>
         </Stack>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <PHForm
+          defaultValues={defaultValues}
+          resolver={zodResolver(loginFormValidationShcema)}
+          onSubmit={onSubmit}
+        >
           <Grid container spacing={2} mt={2}>
             <Grid item xs={6}>
-              <TextField
-                fullWidth
+              <PHInput
+                required={true}
                 type="email"
-                size="small"
-                id="outlined-basic"
                 label="Email"
-                variant="outlined"
-                {...register("email")}
+                name="email"
               />
             </Grid>
             <Grid item xs={6}>
-              <TextField
-                fullWidth
+              <PHInput
+                required={true}
                 type="password"
-                size="small"
-                id="outlined-basic"
                 label="Password"
-                variant="outlined"
-                {...register("password")}
+                name="password"
               />
             </Grid>
           </Grid>
@@ -106,7 +110,7 @@ const Login = () => {
           <Button type="submit" sx={{ my: 3 }} fullWidth>
             Register
           </Button>
-        </form>
+        </PHForm>
         <Typography
           variant="body1"
           component="p"
