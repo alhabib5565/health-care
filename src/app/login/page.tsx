@@ -29,7 +29,7 @@ const Login = () => {
     try {
       const response = await loginUser(data);
       if (response?.data?.accessToken) {
-        router.push("/");
+        router.push("/dashboard");
         toast.success(response.message);
         storeUserInfo(response.data.accessToken);
       } else {
