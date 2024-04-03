@@ -1,27 +1,31 @@
 import { authkey } from "@/app/constant/authkey";
 import { IGenericErrorResponse, ResponseSuccessType } from "@/types";
 import { getFromLocalStorage } from "@/utils/local.storage";
-import axios from "axios"
-const instance = axios.create()
+import axios from "axios";
 
-instance.defaults.headers.post['Content-Type'] = 'application/json'
+const instance = axios.create();
+instance.defaults.headers.post["Content-Type"] = "application/json";
 instance.defaults.headers["Accept"] = "application/json";
-instance.defaults.timeout = 6000
-
+instance.defaults.timeout = 60000;
 
 // Add a request interceptor
-instance.interceptors.request.use(function (config) {
-    // Do something before request is sent
-    const accessToken = getFromLocalStorage(authkey)
-    if (accessToken) {
-        config.headers.Authorization = accessToken
-    }
-    return config;
-}, function (error) {
-    // Do something with request error
-    return Promise.reject(error);
-});
+instance.interceptors.request.use(
+    function (config) {
+        // Do something before request is sent
+        const accessToken = getFromLocalStorage(authkey);
 
+        if (accessToken) {
+            config.headers.Authorization = accessToken;
+        }
+        return config;
+    },
+    function (error) {
+        // Do something with request error
+        return Promise.reject(error);
+    }
+);
+
+// Add a response interceptor
 instance.interceptors.response.use(
     //@ts-ignore
     function (response) {
@@ -45,3 +49,5 @@ instance.interceptors.response.use(
         return responseObject;
     }
 );
+
+export { instance };
