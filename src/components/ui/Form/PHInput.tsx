@@ -6,7 +6,7 @@ type TPHInput = {
   type: HTMLInputTypeAttribute;
   label: string;
   name: string;
-  required: boolean;
+  required?: boolean;
   placheholder?: string;
 };
 
