@@ -36,3 +36,10 @@ export type IGenericErrorMessage = {
     path: string | number;
     message: string;
 };
+
+export type TModalProps = {
+    open: boolean;
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    title?: string;
+    children: React.ReactNode;
+};

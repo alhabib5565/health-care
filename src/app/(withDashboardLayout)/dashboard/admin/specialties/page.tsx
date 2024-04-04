@@ -25,7 +25,7 @@ const SpecialtiesPage = () => {
     setOpen(true);
   };
 
-  const { data, isLoading } = useGetSpecialtiesQuery({});
+  // const { data, isLoading } = useGetSpecialtiesQuery({});
   const [deleteSpecialty] = useDeleteSpecialtiesMutation();
 
   const handleDelete = async (id: string) => {
@@ -79,7 +79,7 @@ const SpecialtiesPage = () => {
         <SpecialtiesModal open={open} setOpen={setOpen}></SpecialtiesModal>
         <TextField size="small" placeholder="Search Speciality" />
       </Stack>
-      <Box my={5}>
+      {/* <Box my={5}>
         {isLoading ? (
           <Typography>Loading...</Typography>
         ) : (
@@ -97,7 +97,7 @@ const SpecialtiesPage = () => {
             />
           </div>
         )}
-      </Box>
+      </Box> */}
     </Box>
   );
 };
