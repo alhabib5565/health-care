@@ -14,10 +14,14 @@ const doctorApi = baseApi.injectEndpoints({
         }),
 
         getAllDoctors: build.query({
-            query: () => ({
-                url: "/doctor",
-                method: "GET",
-            }),
+            query: (params) => {
+                console.log(params)
+                return ({
+                    url: "/doctor",
+                    method: "GET",
+                    params: params
+                })
+            },
             providesTags: [tagTypes.doctor],
         }),
 

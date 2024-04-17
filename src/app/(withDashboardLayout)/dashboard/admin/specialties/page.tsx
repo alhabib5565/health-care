@@ -25,7 +25,8 @@ const SpecialtiesPage = () => {
     setOpen(true);
   };
 
-  // const { data, isLoading } = useGetSpecialtiesQuery({});
+  const { data, isLoading } = useGetSpecialtiesQuery({});
+  console.log(data);
   const [deleteSpecialty] = useDeleteSpecialtiesMutation();
 
   const handleDelete = async (id: string) => {
@@ -48,7 +49,11 @@ const SpecialtiesPage = () => {
       renderCell: ({ row }) => {
         return (
           <Box sx={{ display: "flex", alignItems: "center", height: "100%" }}>
-            <Image src={row.icon} alt="" height={40} width={40} />
+            {row.icon ? (
+              <Image src={row.icon} alt="" height={40} width={40} />
+            ) : (
+              "Not found"
+            )}
           </Box>
         );
       },
@@ -79,25 +84,21 @@ const SpecialtiesPage = () => {
         <SpecialtiesModal open={open} setOpen={setOpen}></SpecialtiesModal>
         <TextField size="small" placeholder="Search Speciality" />
       </Stack>
-      {/* <Box my={5}>
+      <Box my={5}>
         {isLoading ? (
           <Typography>Loading...</Typography>
         ) : (
           <div style={{ height: "auto", width: "100%" }}>
             <DataGrid
+              hideFooterPagination
+              hideFooterSelectedRowCount
+              hideFooter
               rows={data}
               columns={columns}
-              initialState={{
-                pagination: {
-                  paginationModel: { page: 0, pageSize: 5 },
-                },
-              }}
-              pageSizeOptions={[5, 10]}
-              checkboxSelection
             />
           </div>
         )}
-      </Box> */}
+      </Box>
     </Box>
   );
 };
