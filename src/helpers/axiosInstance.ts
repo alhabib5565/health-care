@@ -1,6 +1,7 @@
+import { getAccessToken } from "@/app/auth.service";
 import { authkey } from "@/app/constant/authkey";
 import { IGenericErrorResponse, ResponseSuccessType } from "@/types";
-import { getFromLocalStorage } from "@/utils/local.storage";
+import { getFromLocalStorage, setToLocalStorage } from "@/utils/local.storage";
 import axios from "axios";
 
 const instance = axios.create();
@@ -37,16 +38,29 @@ instance.interceptors.response.use(
         };
         return responseObject;
     },
-    function (error) {
+
+    async function (error) {
         // Any status codes that falls outside the range of 2xx cause this function to trigger
         // Do something with response error
-        const responseObject: IGenericErrorResponse = {
-            statusCode: error?.response?.data?.statusCode || 500,
-            message: error?.response?.data?.message || "Something went wrong!!!",
-            errorMessages: error?.response?.data?.message,
-        };
-        // return Promise.reject(error);
-        return responseObject;
+        const config = error.config
+        console.log(config?.sent)
+        if (error?.response?.status === 500) {
+            const response = await getAccessToken()
+            const accessToken = response.data.accessToken
+            config.headers["Authorization"] = accessToken;
+            setToLocalStorage(authkey, accessToken)
+            return instance(config)
+        } else {
+            const responseObject: IGenericErrorResponse = {
+                statusCode: error?.response?.data?.statusCode || 500,
+                message: error?.response?.data?.message || "Something went wrong!!!",
+                errorMessages: error?.response?.data?.message,
+            };
+            // return Promise.reject(error);
+            return responseObject;
+        }
+
+
     }
 );
 

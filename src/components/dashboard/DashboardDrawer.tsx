@@ -9,6 +9,9 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import SidebarItems from "./sidebar/Sidebar";
+import { useGetUserProfileQuery } from "@/redux/api/user.api";
+import { Avatar, Stack } from "@mui/material";
+import AccountMenu from "./accountMenu/AccountMenu";
 
 const drawerWidth = 240;
 
@@ -17,8 +20,12 @@ export default function DashboardDrawer({
 }: {
   children: React.ReactNode;
 }) {
+  //state
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
+
+  //hooks
+  const { data, isLoading } = useGetUserProfileQuery({});
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -61,19 +68,30 @@ export default function DashboardDrawer({
           >
             <MenuIcon />
           </IconButton>
-          <Box>
-            <Typography color="gray" variant="body2" noWrap component="p">
-              Hi! Al-Habib
-            </Typography>
-            <Typography
-              color="primary.main"
-              variant="body2"
-              noWrap
-              component="p"
-            >
-              Wellcome To, Health Care!
-            </Typography>
-          </Box>
+          <Stack direction="row" width="100%" justifyContent="space-between">
+            <Box>
+              <Typography color="gray" variant="body2" noWrap component="p">
+                Hi! {isLoading ? "loading..." : data?.name}
+              </Typography>
+              <Typography
+                color="primary.main"
+                variant="body2"
+                noWrap
+                component="p"
+              >
+                Wellcome To, Health Care!
+              </Typography>
+            </Box>
+            <AccountMenu>
+              <Avatar
+                sx={{
+                  cursor: "pointer",
+                }}
+                alt={data?.name}
+                src={data?.profilePhoto}
+              />
+            </AccountMenu>
+          </Stack>
         </Toolbar>
       </AppBar>
       <Box

@@ -26,7 +26,6 @@ const SpecialtiesPage = () => {
   };
 
   const { data, isLoading } = useGetSpecialtiesQuery({});
-  console.log(data);
   const [deleteSpecialty] = useDeleteSpecialtiesMutation();
 
   const handleDelete = async (id: string) => {

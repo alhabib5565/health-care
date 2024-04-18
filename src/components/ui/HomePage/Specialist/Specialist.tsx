@@ -44,12 +44,14 @@ const Specialist = async () => {
               flex={1}
               key={item.id}
             >
-              <Image
-                width={100}
-                height={100}
-                src={item.icon}
-                alt="specialty image"
-              />
+              {item.icon && (
+                <Image
+                  width={100}
+                  height={100}
+                  src={item.icon}
+                  alt="specialty image"
+                />
+              )}
               <Typography
                 variant="h4"
                 component="h4"
