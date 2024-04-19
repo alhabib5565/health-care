@@ -11,11 +11,13 @@ import React, { ChangeEvent, useState } from "react";
 import CreateDoctorModal from "./components/CreateDoctorModal";
 import { DataGrid, GridColDef, GridDeleteIcon } from "@mui/x-data-grid";
 import UseDebounced from "@/hooks/UseDebounced";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   useDeleteDoctorMutation,
   useGetAllDoctorsQuery,
 } from "@/redux/api/doctor.api";
 import { toast } from "sonner";
+import Link from "next/link";
 
 const DoctorPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -46,7 +48,14 @@ const DoctorPage = () => {
       flex: 1,
       renderCell: ({ row }) => {
         return (
-          <Box sx={{ display: "flex", alignItems: "center", height: "100%" }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              height: "100%",
+              gap: 2,
+            }}
+          >
             <IconButton
               onClick={() => handleDelete(row.id)}
               aria-label="delete"
@@ -54,6 +63,11 @@ const DoctorPage = () => {
             >
               <GridDeleteIcon />
             </IconButton>
+            <Link href={`doctors/edit/${row.id}`}>
+              <EditIcon aria-label="delete" color="action">
+                <GridDeleteIcon />
+              </EditIcon>
+            </Link>
           </Box>
         );
       },
@@ -97,17 +111,7 @@ const DoctorPage = () => {
           <Typography>Loading...</Typography>
         ) : (
           <div style={{ height: "auto", width: "100%" }}>
-            <DataGrid
-              rows={data}
-              columns={columns}
-              initialState={{
-                pagination: {
-                  paginationModel: { page: 0, pageSize: 5 },
-                },
-              }}
-              pageSizeOptions={[5, 10]}
-              checkboxSelection
-            />
+            <DataGrid rows={data} columns={columns} hideFooter />
           </div>
         )}
       </Box>

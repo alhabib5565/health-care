@@ -58,7 +58,7 @@ const TopRatedDoctors = async () => {
           </Typography>
         </Box>
         <Grid container gap={3} mt={4}>
-          {doctors.data.map((doctor: TDoctor) => (
+          {doctors.data.slice(0, 3).map((doctor: TDoctor) => (
             <Card key={doctor.id} sx={{ maxWidth: 345 }}>
               <CardMedia
                 component="img"
