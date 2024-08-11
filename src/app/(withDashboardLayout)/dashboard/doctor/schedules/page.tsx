@@ -1,18 +1,18 @@
 "use client";
-import { Box, Button, IconButton } from "@mui/material";
-import { useState } from "react";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import DeleteIcon from "@mui/icons-material/Delete";
-
-import dayjs from "dayjs";
+import { Box, Button } from "@mui/material";
+import React, { useState } from "react";
+import Add from "@mui/icons-material/Add";
+import DoctorSchedulesModal from "../components/DoctorSchedulesModal";
 import { dateFormatter } from "@/utils/dateFomatter";
-import CreateScheduleModal from "./components/CreateScheduleModal";
 import { ISchedule } from "@/types";
 import { useGetAllSchedulesQuery } from "@/redux/api/schedule.api";
+import dayjs from "dayjs";
+import { DataGrid, GridColDef, GridDeleteIcon } from "@mui/x-data-grid";
+import IconButton from "@mui/material/IconButton";
 
-const SchedulesPage = () => {
+const DoctorSchedule = () => {
   const [open, setOpen] = useState(false);
-  const handleCreateScheduleModalOpen = () => {
+  const handleDcotorScheduleModalOpen = () => {
     setOpen(!open);
   };
 
@@ -51,19 +51,19 @@ const SchedulesPage = () => {
       renderCell: ({ row }) => {
         return (
           <IconButton aria-label="delete">
-            <DeleteIcon sx={{ color: "red" }} />
+            <GridDeleteIcon sx={{ color: "red" }} />
           </IconButton>
         );
       },
     },
   ];
+
   return (
     <Box>
       <Box>
-        <Button onClick={handleCreateScheduleModalOpen}>
-          Create Schedule +
+        <Button onClick={handleDcotorScheduleModalOpen} endIcon={<Add />}>
+          Create Doctor Schedule
         </Button>
-        <CreateScheduleModal open={open} setOpen={setOpen} />
       </Box>
       {!isLoading ? (
         <Box my={2}>
@@ -72,8 +72,9 @@ const SchedulesPage = () => {
       ) : (
         <h1>Loading.....</h1>
       )}
+      {open && <DoctorSchedulesModal setOpen={setOpen} open={open} />}
     </Box>
   );
 };
 
-export default SchedulesPage;
+export default DoctorSchedule;
