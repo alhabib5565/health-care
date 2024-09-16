@@ -1,6 +1,8 @@
 "use client";
 import { getUserInfo } from "@/app/auth.service";
 import { authkey } from "@/app/constant/authkey";
+import { deleteCookie } from "@/service/action/deleteCookie";
+import { logoutUser } from "@/service/action/logoutUser";
 import { removeFromLocalStorage } from "@/utils/local.storage";
 import { Button } from "@mui/material";
 import Link from "next/link";
@@ -12,8 +14,7 @@ const AuthButton = () => {
   const router = useRouter();
 
   const handleLogout = () => {
-    removeFromLocalStorage(authkey);
-    router.refresh();
+    logoutUser(router);
   };
   return (
     <div>

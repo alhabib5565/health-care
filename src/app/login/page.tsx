@@ -31,7 +31,6 @@ const Login = () => {
       console.log(response);
       if (response?.data?.accessToken) {
         storeUserInfo(response.data.accessToken);
-        router.push("/dashboard");
         toast.success(response.message);
       } else {
         toast.error(response.message, {
@@ -98,16 +97,23 @@ const Login = () => {
               />
             </Grid>
           </Grid>
-          <Typography
-            variant="body1"
-            component="p"
-            fontWeight={300}
-            fontSize={14}
-            textAlign="end"
-            mt={1}
-          >
-            Forget password
-          </Typography>
+          <Link href="/forget-password">
+            <Typography
+              variant="body1"
+              component="p"
+              fontWeight={300}
+              fontSize={14}
+              textAlign="end"
+              mt={1}
+              sx={{
+                "&:hover": {
+                  color: "blue",
+                },
+              }}
+            >
+              Forget password
+            </Typography>
+          </Link>
           <Button type="submit" sx={{ my: 3 }} fullWidth>
             Register
           </Button>

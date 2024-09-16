@@ -8,6 +8,7 @@ import { styled } from "@mui/system";
 import { useRouter } from "next/navigation";
 import { Avatar, ListItemIcon } from "@mui/material";
 import Logout from "@mui/icons-material/Logout";
+import { logoutUser } from "@/service/action/logoutUser";
 
 export default function AccountMenu({
   children,
@@ -17,8 +18,7 @@ export default function AccountMenu({
   const router = useRouter();
 
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    router.push("/login");
+    logoutUser(router);
   };
 
   return (

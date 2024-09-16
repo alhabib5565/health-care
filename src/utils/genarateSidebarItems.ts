@@ -9,6 +9,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import ReviewsIcon from "@mui/icons-material/Reviews";
 import AirlineSeatIndividualSuiteIcon from "@mui/icons-material/AirlineSeatIndividualSuite";
 import TryIcon from "@mui/icons-material/Try";
+import Key from "@mui/icons-material/Key";
 
 export const genarateSidebarItems = (role: UserRole): DrawerItem[] => {
   const roleMenus: DrawerItem[] = [];
@@ -17,6 +18,11 @@ export const genarateSidebarItems = (role: UserRole): DrawerItem[] => {
       title: "Profile",
       path: `${role}/profile`,
       icon: DashboardIcon,
+    },
+    {
+      title: "Change Password",
+      path: `change-password`,
+      icon: Key,
     },
   ];
   switch (role) {
