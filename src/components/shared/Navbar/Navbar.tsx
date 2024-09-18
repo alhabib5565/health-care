@@ -1,4 +1,5 @@
 "use client";
+import useUserInfo from "@/hooks/useUserInfo";
 import { Box, Container, Stack, Typography } from "@mui/material";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -9,6 +10,7 @@ const AuthButton = dynamic(
 );
 
 const Navbar = () => {
+  const userInfo = useUserInfo() as any;
   return (
     <Container>
       <Stack
@@ -40,6 +42,11 @@ const Navbar = () => {
           <Typography component={Link} href="/ngos">
             NGOs
           </Typography>
+          {userInfo?.userId ? (
+            <Typography component={Link} href="/dashboard">
+              Dashboard
+            </Typography>
+          ) : null}
         </Stack>
         <AuthButton />
       </Stack>

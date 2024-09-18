@@ -6,6 +6,7 @@ import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import React from "react";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import Link from "next/link";
 type TDoctor = {
   id: string;
   email: string;
@@ -95,14 +96,16 @@ const TopRatedDoctors = async () => {
             textAlign: "center",
           }}
         >
-          <Button
-            variant="outlined"
-            sx={{
-              marginTop: "20px",
-            }}
-          >
-            View ALL
-          </Button>
+          <Link href="/doctors">
+            <Button
+              variant="outlined"
+              sx={{
+                marginTop: "20px",
+              }}
+            >
+              View ALL
+            </Button>
+          </Link>
         </Box>
       </Container>
     </Box>
